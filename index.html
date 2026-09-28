@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Control: Power or Responsibility?</title>
+  <style>
+    :root {
+      --ink: #17211b;
+      --muted: #5a665f;
+      --paper: #f4f0e7;
+      --card: #fffdf8;
+      --line: #c8c2b4;
+      --green: #166b4f;
+      --green-soft: #dceee5;
+      --amber: #a35d12;
+      --amber-soft: #f8e6cd;
+      --red: #9b3d34;
+      --red-soft: #f5ded9;
+      --blue: #285c83;
+      --blue-soft: #dceaf4;
+      --shadow: 0 18px 45px rgb(23 33 27 / 10%);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgb(255 255 255 / 85%), transparent 34rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button, input { font: inherit; }
+
+    a {
+      color: var(--blue);
+      text-underline-offset: 0.16em;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 56px 0 80px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.7rem, 7vw, 6.4rem);
+      font-weight: 500;
+      letter-spacing: -0.055em;
+      line-height: 0.93;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 500;
+      letter-spacing: -0.025em;
+      line-height: 1.05;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.25;
+    }
+
+    .lede {
+      max-width: 820px;
+      margin: 24px 0 0;
+      color: #344139;
+      font-size: clamp(1.08rem, 2vw, 1.35rem);
+    }
+
+    .thesis {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 18px;
+      align-items: center;
+      margin: 44px 0 64px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgb(255 253 248 / 76%);
+      box-shadow: var(--shadow);
+    }
+
+    .pole {
+      min-height: 145px;
+      padding: 22px;
+      border-radius: 18px;
+    }
+
+    .pole strong {
+      display: block;
+      margin-bottom: 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.55rem;
+      font-weight: 500;
+    }
+
+    .pole p { margin: 0; }
+    .pole.sovereignty { background: var(--green-soft); }
+    .pole.responsibility { background: var(--amber-soft); }
+    .versus { color: var(--muted); font-weight: 800; }
+
+    .source-tip {
+      position: relative;
+      display: inline-flex;
+      vertical-align: middle;
+    }
+
+    .source-button {
+      display: inline-grid;
+      width: 1.35rem;
+      height: 1.35rem;
+      margin-left: 0.3rem;
+      padding: 0;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      color: var(--blue);
+      background: white;
+      font-size: 0.75rem;
+      font-weight: 900;
+      cursor: help;
+    }
+
+    .source-card {
+      position: absolute;
+      z-index: 20;
+      top: calc(100% + 10px);
+      left: 50%;
+      width: min(330px, 78vw);
+      padding: 14px;
+      border: 1px solid #a9b5be;
+      border-radius: 12px;
+      color: var(--ink);
+      background: white;
+      box-shadow: 0 16px 35px rgb(23 33 27 / 20%);
+      font-size: 0.82rem;
+      font-weight: 400;
+      line-height: 1.4;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -4px);
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .source-card strong { display: block; margin-bottom: 5px; }
+    .source-tip:hover .source-card,
+    .source-tip:focus-within .source-card {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0);
+    }
+
+    .section-intro {
+      max-width: 800px;
+      margin: 0 0 28px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .matrix-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .matrix-shell {
+      position: relative;
+      padding: 24px 24px 58px 74px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .matrix {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      min-height: 520px;
+      overflow: hidden;
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      background: #fff;
+    }
+
+    .quadrant {
+      padding: 22px;
+      border: 1px solid rgb(23 33 27 / 15%);
+    }
+
+    .quadrant strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.05rem;
+    }
+
+    .quadrant p {
+      max-width: 24ch;
+      margin: 0;
+      color: #46534b;
+      font-size: 0.88rem;
+    }
+
+    .q-sovereignty { background: var(--green-soft); }
+    .q-self { background: var(--blue-soft); }
+    .q-default { background: #e9e6df; }
+    .q-responsibility { background: var(--amber-soft); }
+
+    .marker {
+      position: absolute;
+      z-index: 5;
+      width: 28px;
+      height: 28px;
+      border: 5px solid white;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 3px 12px rgb(23 33 27 / 35%);
+      transform: translate(-50%, 50%);
+      transition: left 220ms ease, bottom 220ms ease;
+    }
+
+    .axis {
+      position: absolute;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .axis-y {
+      left: 18px;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      white-space: nowrap;
+    }
+
+    .axis-y-low { left: 44px; bottom: 18px; }
+    .axis-y-high { left: 42px; top: 18px; }
+    .axis-x { right: 24px; bottom: 18px; }
+    .axis-x-low { left: 74px; bottom: 18px; }
+
+    .controls-panel {
+      padding: 24px;
+      border-radius: 22px;
+      color: white;
+      background: var(--ink);
+    }
+
+    .controls-panel h3 {
+      margin-bottom: 18px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.55rem;
+      font-weight: 500;
+    }
+
+    .range-row { margin-bottom: 22px; }
+    .range-row label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 0.86rem;
+      font-weight: 750;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #8bd5b6;
+    }
+
+    .diagnosis {
+      min-height: 88px;
+      margin: 20px 0;
+      padding: 14px;
+      border: 1px solid rgb(255 255 255 / 22%);
+      border-radius: 14px;
+      background: rgb(255 255 255 / 8%);
+      font-size: 0.9rem;
+    }
+
+    .presets {
+      display: grid;
+      gap: 8px;
+    }
+
+    .preset {
+      padding: 9px 11px;
+      border: 1px solid rgb(255 255 255 / 35%);
+      border-radius: 10px;
+      color: white;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .preset:hover, .preset:focus-visible {
+      background: rgb(255 255 255 / 12%);
+      outline: 2px solid white;
+      outline-offset: 2px;
+    }
+
+    .powers-section { margin-top: 78px; }
+
+    .power-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding: 15px 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+    }
+
+    .score {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.3rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .legend span::before {
+      display: inline-block;
+      width: 0.72rem;
+      height: 0.72rem;
+      margin-right: 5px;
+      border-radius: 50%;
+      content: "";
+    }
+
+    .legend .hidden::before { background: var(--red); }
+    .legend .partial::before { background: var(--amber); }
+    .legend .strong::before { background: var(--green); }
+
+    .powers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .power-card {
+      display: grid;
+      min-height: 220px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-top: 7px solid var(--amber);
+      border-radius: 16px;
+      background: var(--card);
+      box-shadow: 0 8px 22px rgb(23 33 27 / 7%);
+      transition: transform 150ms ease, border-color 150ms ease;
+    }
+
+    .power-card:hover { transform: translateY(-2px); }
+    .power-card[data-state="hidden"] { border-top-color: var(--red); }
+    .power-card[data-state="strong"] { border-top-color: var(--green); }
+
+    .power-number {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.09em;
+    }
+
+    .power-card h3 {
+      margin: 4px 0 10px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.35rem;
+      font-weight: 500;
+    }
+
+    .power-card p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.87rem;
+    }
+
+    .state-button {
+      align-self: end;
+      width: 100%;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--ink);
+      background: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .state-button:hover, .state-button:focus-visible {
+      border-color: var(--ink);
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    .example-panel {
+      margin-top: 18px;
+      padding: 22px;
+      border-left: 5px solid var(--green);
+      border-radius: 0 16px 16px 0;
+      background: var(--green-soft);
+    }
+
+    .example-panel p { margin: 7px 0 0; }
+
+    .interpretation {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 78px;
+    }
+
+    .interpretation article {
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--card);
+    }
+
+    .interpretation h3 {
+      margin-bottom: 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.55rem;
+      font-weight: 500;
+    }
+
+    .interpretation ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+
+    .references {
+      margin-top: 78px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+    }
+
+    .references ol {
+      max-width: 900px;
+      padding-left: 1.4rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .references li { margin-bottom: 10px; }
+
+    .note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .thesis, .matrix-layout, .interpretation { grid-template-columns: 1fr; }
+      .versus { text-align: center; }
+      .powers-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .matrix { min-height: 480px; }
+    }
+
+    @media (max-width: 620px) {
+      .page { width: min(100% - 20px, 1180px); padding-top: 30px; }
+      .powers-grid { grid-template-columns: 1fr; }
+      .matrix-shell { padding: 12px 12px 48px 52px; }
+      .matrix { min-height: 600px; }
+      .quadrant { padding: 13px; }
+      .quadrant p { font-size: 0.78rem; }
+      .axis-y-low, .axis-y-high { left: 27px; }
+      .axis-x-low { left: 52px; }
+      .source-card { left: auto; right: -20px; transform: translateY(-4px); }
+      .source-tip:hover .source-card,
+      .source-tip:focus-within .source-card { transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <p class="eyebrow">Privacy language laboratory</p>
+    <h1>When “control” is not the same as power</h1>
+    <p class="lede">
+      Privacy marketing often treats control as a button, dashboard, or preference.
+      Actual control is a bundle of powers across the full data lifecycle—and every
+      power not offered remains with the provider.
+    </p>
+
+    <section class="thesis" aria-label="The conceptual tension">
+      <div class="pole sovereignty">
+        <strong>
+          Substantive agency
+          <span class="source-tip">
+            <button class="source-button" aria-label="Source for data sovereignty">i</button>
+            <span class="source-card" role="tooltip">
+              <strong>Related concept: data sovereignty</strong>
+              Hummel, Braun, Tretter, and Dabrock describe data sovereignty as a
+              varied family of ideas concerned with agents retaining control over
+              data. It is real, but not a single settled doctrine.
+              <a href="https://doi.org/10.1177/2053951720982012" target="_blank" rel="noreferrer">View source</a>
+            </span>
+          </span>
+        </strong>
+        <p>
+          The person has effective, enforceable power to know, stop, correct, delete,
+          contest, and leave—and protective defaults reduce the amount of work required.
+        </p>
+      </div>
+      <div class="versus">versus</div>
+      <div class="pole responsibility">
+        <strong>
+          Responsibilized self-management
+          <span class="source-tip">
+            <button class="source-button" aria-label="Source for responsibilization">i</button>
+            <span class="source-card" role="tooltip">
+              <strong>Responsibilization is a real concept</strong>
+              De Wolf and Joye call the privacy-as-individual-duty discourse
+              “control responsibility”: people are expected to learn and manage
+              privacy while structural platform power remains in place.
+              <a href="https://ijoc.org/index.php/ijoc/article/view/11637" target="_blank" rel="noreferrer">View source</a>
+            </span>
+          </span>
+        </strong>
+        <p>
+          The provider defines the choices, keeps the underlying decision power, and
+          shifts the work—and often the blame—for privacy outcomes onto the person.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="matrix-title">
+      <h2 id="matrix-title">It is not a one-dimensional choice</h2>
+      <p class="section-intro">
+        “Sovereignty versus responsibilization” identifies a useful tension, but the
+        concepts are not strict opposites. Move the sliders to see why. A product can
+        give people real power while still imposing too much work, or offer effortless
+        defaults while giving them almost no say.
+        <span class="source-tip">
+          <button class="source-button" aria-label="Source for privacy self-management">i</button>
+          <span class="source-card" role="tooltip">
+            <strong>Privacy self-management</strong>
+            Solove argues that notice, access, and consent are necessary but cannot
+            carry the full burden of privacy because cognitive and structural limits
+            make comprehensive individual management infeasible.
+            <a href="https://harvardlawreview.org/print/vol-126/introduction-privacy-self-management-and-the-consent-dilemma/" target="_blank" rel="noreferrer">View source</a>
+          </span>
+        </span>
+      </p>
+
+      <div class="matrix-layout">
+        <div class="matrix-shell">
+          <span class="axis axis-y">Effective power over data lifecycle</span>
+          <span class="axis axis-y-high">High power</span>
+          <span class="axis axis-y-low">Low power</span>
+          <span class="axis axis-x-low">Low burden</span>
+          <span class="axis axis-x">High burden on person</span>
+          <div class="matrix" aria-label="Matrix of effective power and individual burden">
+            <div class="quadrant q-sovereignty">
+              <strong>Sovereignty-supporting design</strong>
+              <p>Strong defaults, enforceable limits, usable rights, and little routine labor.</p>
+            </div>
+            <div class="quadrant q-self">
+              <strong>Powerful but laborious self-management</strong>
+              <p>Real choices exist, but people must repeatedly understand and exercise them.</p>
+            </div>
+            <div class="quadrant q-default">
+              <strong>Provider or regulator decides</strong>
+              <p>Low consumer effort, but outcomes depend on rules and defaults set elsewhere.</p>
+            </div>
+            <div class="quadrant q-responsibility">
+              <strong>Responsibilization</strong>
+              <p>Many settings and notices, but little effective power over the underlying system.</p>
+            </div>
+            <div class="marker" id="marker" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <aside class="controls-panel">
+          <h3>Place a privacy experience</h3>
+          <div class="range-row">
+            <label for="power">
+              <span>Effective power</span>
+              <output id="power-value">35</output>
+            </label>
+            <input id="power" type="range" min="0" max="100" value="35">
+          </div>
+          <div class="range-row">
+            <label for="burden">
+              <span>Work placed on person</span>
+              <output id="burden-value">78</output>
+            </label>
+            <input id="burden" type="range" min="0" max="100" value="78">
+          </div>
+          <div class="diagnosis" id="diagnosis" aria-live="polite"></div>
+          <div class="presets" aria-label="Example configurations">
+            <button class="preset" data-power="35" data-burden="78">Typical settings dashboard</button>
+            <button class="preset" data-power="86" data-burden="20">Strong defaults + real rights</button>
+            <button class="preset" data-power="82" data-burden="78">Real but exhausting control</button>
+            <button class="preset" data-power="15" data-burden="12">Provider decides everything</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="powers-section" aria-labelledby="powers-title">
+      <h2 id="powers-title">
+        “Control” compresses nine different powers
+        <span class="source-tip">
+          <button class="source-button" aria-label="Source for data subject rights">i</button>
+          <span class="source-card" role="tooltip">
+            <strong>Legal rights are also a bundle</strong>
+            GDPR Articles 15–22 distinguish access, correction, erasure, restriction,
+            portability, objection, and safeguards around automated decisions. The
+            nine powers below are a design framework, not a claim that every power is
+            legally guaranteed everywhere.
+            <a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng" target="_blank" rel="noreferrer">View source</a>
+          </span>
+        </span>
+      </h2>
+      <p class="section-intro">
+        Click each status to test a product. “Available” is not enough: a power is
+        strong only when it is complete enough to matter, easy to exercise, and backed
+        by a system obligation.
+      </p>
+
+      <div class="power-summary">
+        <div class="score"><strong id="strong-count">0</strong> of 9 powers are substantive</div>
+        <div class="legend" aria-label="Status legend">
+          <span class="hidden">Hidden or absent</span>
+          <span class="partial">Partial or provider-defined</span>
+          <span class="strong">Substantive</span>
+        </div>
+      </div>
+
+      <div class="powers-grid" id="powers-grid">
+        <article class="power-card" data-state="partial">
+          <span class="power-number">POWER 01</span>
+          <h3>Know that information exists</h3>
+          <p>Not just visible account fields: sources, observed events, inferences, recipients, and retention.</p>
+          <button class="state-button">Partial or provider-defined</button>
+        </article>
+        <article class="power-card" data-state="hidden">
+          <span class="power-number">POWER 02</span>
+          <h3>Stop collection</h3>
+          <p>Prevent recording before it happens—not merely hide, clear, or stop using an existing record.</p>
+          <button class="state-button">Hidden or absent</button>
+        </article>
+        <article class="power-card" data-state="partial">
+          <span class="power-number">POWER 03</span>
+          <h3>Stop a particular use</h3>
+          <p>Separate advertising, recommendations, model training, safety, research, and product measurement.</p>
+          <button class="state-button">Partial or provider-defined</button>
+        </article>
+        <article class="power-card" data-state="hidden">
+          <span class="power-number">POWER 04</span>
+          <h3>Stop a transfer</h3>
+          <p>Act before information reaches another party and explain what happens to copies already transferred.</p>
+          <button class="state-button">Hidden or absent</button>
+        </article>
+        <article class="power-card" data-state="hidden">
+          <span class="power-number">POWER 05</span>
+          <h3>Correct an inference</h3>
+          <p>Inspect and dispute predictions, scores, categories, and profiles—not only facts the person typed.</p>
+          <button class="state-button">Hidden or absent</button>
+        </article>
+        <article class="power-card" data-state="partial">
+          <span class="power-number">POWER 06</span>
+          <h3>Delete stored copies</h3>
+          <p>Clarify active systems, logs, backups, derived records, legal exceptions, recipients, and timing.</p>
+          <button class="state-button">Partial or provider-defined</button>
+        </article>
+        <article class="power-card" data-state="partial">
+          <span class="power-number">POWER 07</span>
+          <h3>Change a default</h3>
+          <p>A setting is meaningful only if the default is visible, reversible, durable, and not repeatedly undermined.</p>
+          <button class="state-button">Partial or provider-defined</button>
+        </article>
+        <article class="power-card" data-state="hidden">
+          <span class="power-number">POWER 08</span>
+          <h3>Challenge a decision</h3>
+          <p>Receive an explanation, correct inputs, reach a human, appeal, and obtain a remedy when a system is wrong.</p>
+          <button class="state-button">Hidden or absent</button>
+        </article>
+        <article class="power-card" data-state="hidden">
+          <span class="power-number">POWER 09</span>
+          <h3>Leave without losing an essential service</h3>
+          <p>Refusal is not sovereign when it requires losing work, healthcare, education, safety, or social participation.</p>
+          <button class="state-button">Hidden or absent</button>
+        </article>
+      </div>
+
+      <div class="example-panel">
+        <strong>The decisive test</strong>
+        <p>
+          Do not ask only, “Is there a control?” Ask: <strong>What power does it
+          transfer, at which stage, against which provider decision, with what limit,
+          and at what cost to the person?</strong>
+        </p>
+      </div>
+    </section>
+
+    <section class="interpretation" aria-label="How to use the concepts">
+      <article>
+        <h3>Use “responsibilization” when...</h3>
+        <ul>
+          <li>privacy is framed mainly as the person's duty to read, choose, configure, and monitor;</li>
+          <li>the provider controls the menu of choices and underlying system;</li>
+          <li>protective outcomes depend on attention, skill, memory, and repeated labor;</li>
+          <li>failure is narrated as the person choosing badly rather than the system being poorly governed.</li>
+        </ul>
+      </article>
+      <article>
+        <h3>Use “sovereignty” carefully when...</h3>
+        <ul>
+          <li>the person has meaningful power across the data lifecycle, not merely interface preferences;</li>
+          <li>rights and limits are enforceable against the provider;</li>
+          <li>defaults reduce dependence on constant self-management;</li>
+          <li>the term specifies whose sovereignty is meant—individual, community, organization, Indigenous nation, or state.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="references">
+      <h2>References behind the model</h2>
+      <ol>
+        <li>
+          Daniel J. Solove, “Privacy Self-Management and the Consent Dilemma,”
+          <em>Harvard Law Review</em> 126 (2013). Solove argues that notice, consent,
+          and individual management are necessary but structurally incapable of
+          carrying the full privacy burden.
+        </li>
+        <li>
+          Ralf De Wolf and Stijn Joye, “Control Responsibility: The Discursive
+          Construction of Privacy, Teens, and Facebook in Flemish Newspapers,”
+          <em>International Journal of Communication</em> 13 (2019). The article
+          explicitly connects privacy-as-control discourse to responsibilization.
+        </li>
+        <li>
+          Patrik Hummel, Matthias Braun, Max Tretter, and Peter Dabrock, “Data
+          Sovereignty: A Review,” <em>Big Data &amp; Society</em> 8 (2021). The review
+          shows that data sovereignty is real but plural and context-dependent.
+        </li>
+        <li>
+          Regulation (EU) 2016/679, especially Articles 15–22. These distinguish
+          access, rectification, erasure, restriction, portability, objection, and
+          protections concerning automated decisions.
+        </li>
+      </ol>
+      <p class="note">
+        Conceptual note: the matrix and nine-power framework are an interpretive
+        synthesis created for this project. They are informed by the cited literature
+        but are not copied from a single source.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const power = document.querySelector("#power");
+    const burden = document.querySelector("#burden");
+    const marker = document.querySelector("#marker");
+    const diagnosis = document.querySelector("#diagnosis");
+    const powerValue = document.querySelector("#power-value");
+    const burdenValue = document.querySelector("#burden-value");
+
+    function classify(powerLevel, burdenLevel) {
+      if (powerLevel >= 50 && burdenLevel < 50) {
+        return "<strong>Sovereignty-supporting design.</strong><br>Real power is paired with protective defaults and low routine labor.";
+      }
+      if (powerLevel >= 50 && burdenLevel >= 50) {
+        return "<strong>Powerful but laborious self-management.</strong><br>The choices matter, but exercising them demands sustained effort.";
+      }
+      if (powerLevel < 50 && burdenLevel >= 50) {
+        return "<strong>Responsibilization.</strong><br>The person carries substantial privacy work without equivalent power over the system.";
+      }
+      return "<strong>Provider or regulator decides.</strong><br>The person does little work, but also has little direct power over the outcome.";
+    }
+
+    function updateMatrix() {
+      const p = Number(power.value);
+      const b = Number(burden.value);
+      marker.style.left = `${b}%`;
+      marker.style.bottom = `${p}%`;
+      powerValue.textContent = p;
+      burdenValue.textContent = b;
+      diagnosis.innerHTML = classify(p, b);
+    }
+
+    power.addEventListener("input", updateMatrix);
+    burden.addEventListener("input", updateMatrix);
+
+    document.querySelectorAll(".preset").forEach((button) => {
+      button.addEventListener("click", () => {
+        power.value = button.dataset.power;
+        burden.value = button.dataset.burden;
+        updateMatrix();
+      });
+    });
+
+    const labels = {
+      hidden: "Hidden or absent",
+      partial: "Partial or provider-defined",
+      strong: "Substantive"
+    };
+    const sequence = ["hidden", "partial", "strong"];
+
+    function updateScore() {
+      const cards = [...document.querySelectorAll(".power-card")];
+      const strong = cards.filter((card) => card.dataset.state === "strong").length;
+      document.querySelector("#strong-count").textContent = strong;
+    }
+
+    document.querySelectorAll(".power-card").forEach((card) => {
+      const button = card.querySelector(".state-button");
+      button.addEventListener("click", () => {
+        const current = sequence.indexOf(card.dataset.state);
+        const next = sequence[(current + 1) % sequence.length];
+        card.dataset.state = next;
+        button.textContent = labels[next];
+        updateScore();
+      });
+    });
+
+    updateMatrix();
+    updateScore();
+  </script>
+</body>
+</html>
